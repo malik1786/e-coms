@@ -12,11 +12,7 @@ const app = express();
 const clientUrl = process.env.CLIENT_URL;
 
 // CORS configuration - handles frontend connection
-app.use(
-  cors({
-    origin: clientUrl || true
-  })
-);
+app.use(cors()); 
 app.use(express.json());
 
 // Root route
