@@ -16,7 +16,11 @@ export default function ProductsPage() {
       try {
         setLoading(true);
         const data = await getProducts();
-        setProducts(data);
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setProducts([]);
+        }
       } catch (err) {
         setError(err.message);
       } finally {

@@ -15,7 +15,12 @@ export default function HomePage() {
       try {
         setLoading(true);
         const data = await getProducts();
-        setProducts(data);
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setProducts([]);
+          console.error('Expected array of products, got:', data);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
