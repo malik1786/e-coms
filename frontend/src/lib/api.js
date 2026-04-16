@@ -1,7 +1,8 @@
 // In dev the Vite proxy forwards /products & /auth to localhost:5000 – no CORS needed.
 // In production the full URL from .env is used.
-const API_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
+// In production, we use the VITE_API_URL env var. In dev, we use an empty string to trigger the Vite proxy.
+const API_URL = import.meta.env.PROD 
+  ? (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') 
   : '';
 const TOKEN_KEY = 'client2_admin_token';
 
