@@ -29,6 +29,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', mode: 'in-memory' });
 });
 
+// Support both prefixed (/api) and non-prefixed routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 
