@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../lib/format';
 import { getSearchSuggestions } from '../lib/search';
@@ -7,11 +7,16 @@ export default function SmartSearchBar({
   products,
   initialValue = '',
   placeholder = 'Search fragrances, oud, musk, featured...',
-  compact = false
+  compact = false,
+  onQueryChange
 }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState(initialValue);
   const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    setQuery(initialValue);
+  }, [initialValue]);
 
   const suggestions = useMemo(
     () => getSearchSuggestions(products, query, compact ? 4 : 6),
@@ -25,11 +30,19 @@ export default function SmartSearchBar({
     const trimmed = query.trim();
 
     if (!trimmed) {
+      onQueryChange?.('');
       navigate('/products');
       return;
     }
 
+    onQueryChange?.(trimmed);
     navigate(`/products?q=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleChange = (event) => {
+    const nextValue = event.target.value;
+    setQuery(nextValue);
+    onQueryChange?.(nextValue);
   };
 
   return (
@@ -51,7 +64,7 @@ export default function SmartSearchBar({
         <input
           type="text"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={handleChange}
           onFocus={() => setFocused(true)}
           onBlur={() => window.setTimeout(() => setFocused(false), 120)}
           placeholder={placeholder}

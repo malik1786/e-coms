@@ -40,6 +40,9 @@ export default function Navbar() {
           <NavLink to="/products" className={navClass}>
             Products
           </NavLink>
+          <NavLink to="/products" className={navClass}>
+            Search
+          </NavLink>
           <NavLink to="/cart" className={navClass}>
             Cart
             <span className="ml-2 inline-flex min-w-6 items-center justify-center rounded-full bg-amber-500 px-2 py-0.5 text-xs font-black text-white">

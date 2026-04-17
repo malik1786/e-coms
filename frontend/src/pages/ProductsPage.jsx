@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 
 export default function ProductsPage() {
   const { addToCart } = useCart();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -39,6 +39,17 @@ export default function ProductsPage() {
     [products, searchQuery]
   );
 
+  const handleQueryChange = (nextValue) => {
+    const trimmed = nextValue.trim();
+
+    if (!trimmed) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    setSearchParams({ q: trimmed }, { replace: true });
+  };
+
   return (
     <div className="space-y-6">
       <div className="animate-fade-up flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
@@ -57,6 +68,7 @@ export default function ProductsPage() {
               initialValue={searchQuery}
               compact
               placeholder="Smart search by fragrance name, oud, amber, featured..."
+              onQueryChange={handleQueryChange}
             />
           </div>
         </div>
