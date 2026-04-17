@@ -1,14 +1,19 @@
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TOKEN_KEY = 'client2_admin_token';
 
-function getApiBase() {
-  if (!API_URL) return '/api';
-  return API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+function getApiBaseCandidates() {
+  if (API_URL) {
+    const normalized = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+    return [normalized];
+  }
+
+  // On some Vercel setups the backend is mounted under "/api",
+  // while in others the same Express app may be reachable via bare routes.
+  return ['/api', ''];
 }
 
-async function request(path, options = {}) {
+async function sendRequest(baseUrl, path, options = {}) {
   const { auth = true, body, headers = {}, ...rest } = options;
-
   const requestHeaders = { ...headers };
 
   if (body !== undefined) {
@@ -23,7 +28,7 @@ async function request(path, options = {}) {
   }
 
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  const url = `${getApiBase()}${normalizedPath}`;
+  const url = `${baseUrl}${normalizedPath}`;
 
   const response = await fetch(url, {
     ...rest,
@@ -41,10 +46,36 @@ async function request(path, options = {}) {
   }
 
   if (!response.ok) {
-    throw new Error((data && data.message) || 'Request failed');
+    const error = new Error((data && data.message) || 'Request failed');
+    error.status = response.status;
+    error.data = data;
+    throw error;
   }
 
   return data;
+}
+
+async function request(path, options = {}) {
+  const bases = getApiBaseCandidates();
+  let lastError;
+
+  for (let index = 0; index < bases.length; index += 1) {
+    try {
+      return await sendRequest(bases[index], path, options);
+    } catch (error) {
+      lastError = error;
+      const isLastAttempt = index === bases.length - 1;
+      const isRouteMismatch =
+        error?.data?.message === 'Route not found' ||
+        error?.status === 404;
+
+      if (isLastAttempt || !isRouteMismatch) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError || new Error('Request failed');
 }
 
 /* =========================

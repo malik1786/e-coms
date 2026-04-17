@@ -1,8 +1,0 @@
-{
-  "appId": "com.sufiperfumes.admin",
-  "appName": "Sufi Admin",
-  "webDir": "dist",
-  "server": {
-    "androidScheme": "https"
-  }
-}
