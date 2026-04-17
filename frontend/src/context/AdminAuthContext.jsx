@@ -1,41 +1,54 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { loginAdmin } from '../lib/api';
 
 const AdminAuthContext = createContext(null);
 const TOKEN_KEY = 'client2_admin_token';
 
 const readToken = () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
+  if (typeof window === 'undefined') return null;
   return localStorage.getItem(TOKEN_KEY);
 };
 
 const storeToken = (token) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
+  if (typeof window === 'undefined') return;
   localStorage.setItem(TOKEN_KEY, token);
 };
 
 const removeToken = () => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
+  if (typeof window === 'undefined') return;
   localStorage.removeItem(TOKEN_KEY);
 };
 
 export function AdminAuthProvider({ children }) {
   const [token, setToken] = useState(readToken);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setToken(readToken());
+  }, []);
 
   const login = async (credentials) => {
-    const data = await loginAdmin(credentials);
-    storeToken(data.token);
-    setToken(data.token);
-    return data;
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await loginAdmin(credentials);
+
+      if (!data?.token) {
+        throw new Error('Invalid login response');
+      }
+
+      storeToken(data.token);
+      setToken(data.token);
+
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
@@ -49,7 +62,9 @@ export function AdminAuthProvider({ children }) {
         token,
         isAuthenticated: Boolean(token),
         login,
-        logout
+        logout,
+        loading,
+        error
       }}
     >
       {children}

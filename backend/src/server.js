@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const connectDB = require('./config/db');
@@ -9,45 +10,62 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const clientUrl = process.env.CLIENT_URL;
 
-// CORS configuration - handles frontend connection
-app.use(cors()); 
+// IMPORTANT: frontend URL
+const CLIENT_URL = process.env.CLIENT_URL;
+
+// ======================
+// CORS CONFIG (FIXED)
+// ======================
+app.use(cors({
+  origin: [
+    CLIENT_URL,
+    'http://localhost:5173'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
 app.use(express.json());
 
-// Root route
+// ======================
+// ROOT
+// ======================
 app.get('/', (req, res) => {
-  res.json({ message: 'E-coms API is running', version: '1.0.0' });
+  res.json({
+    message: 'E-coms API is running',
+    version: '1.0.0'
+  });
 });
 
-// Health check
+// ======================
+// HEALTH CHECK
+// ======================
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', mode: 'in-memory' });
+  res.json({ status: 'ok' });
 });
 
-// Support both prefixed (/api) and non-prefixed routes
+// ======================
+// API ROUTES (ONLY ONE STYLE)
+// ======================
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-app.use('/auth', authRoutes);
-app.use('/products', productRoutes);
 
-// 404 handler
+// ======================
+// 404 HANDLER
+// ======================
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Global error handler
+// ======================
+// ERROR HANDLER
+// ======================
 app.use((error, req, res, next) => {
   console.error(error);
-  res.status(500).json({ message: error.message || 'Server error' });
-});
-
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Backend running in IN-MEMORY mode on port ${PORT}`);
-    console.log(`🔌 No database required.`);
+  res.status(500).json({
+    message: error.message || 'Server error'
   });
-}
+});
 
 module.exports = app;
