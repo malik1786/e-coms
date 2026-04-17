@@ -9,7 +9,7 @@ const connectDB = async () => {
     isConnected = true;
   } catch (error) {
     console.warn('⚠️  MongoDB not available – running in IN-MEMORY mode (data resets on restart).');
-    console.warn('   Start MongoDB or set MONGO_URI in backend/.env to persist data.');
+    console.warn('   Start MongoDB or set MONGO_URI in the root .env file to persist data.');
     isConnected = false;
   }
 };
@@ -18,4 +18,3 @@ const getIsConnected = () => isConnected;
 
 module.exports = connectDB;
 module.exports.getIsConnected = getIsConnected;
-

@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createProduct, deleteProduct, getProducts, updateProduct } from '../../lib/api';
 import { formatPrice } from '../../lib/format';
+import { getProductImages, getPrimaryProductImage } from '../../lib/productImages';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const emptyForm = {
   name: '',
   price: '',
   description: '',
-  image: '',
+  images: [],
   stock: '',
   featured: false,
   trending: false
@@ -24,6 +25,19 @@ export default function AdminDashboardPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+
+  const readFilesAsDataUrls = (files) =>
+    Promise.all(
+      files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+            reader.readAsDataURL(file);
+          })
+      )
+    );
 
   const loadProducts = async () => {
     try {
@@ -59,6 +73,34 @@ export default function AdminDashboardPage() {
     }));
   };
 
+  const handleImageUpload = async (event) => {
+    const files = Array.from(event.target.files || []);
+
+    if (!files.length) {
+      return;
+    }
+
+    try {
+      setError('');
+      const uploadedImages = await readFilesAsDataUrls(files);
+      setForm((current) => ({
+        ...current,
+        images: [...current.images, ...uploadedImages]
+      }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      event.target.value = '';
+    }
+  };
+
+  const removeImage = (indexToRemove) => {
+    setForm((current) => ({
+      ...current,
+      images: current.images.filter((_, index) => index !== indexToRemove)
+    }));
+  };
+
   const resetForm = () => {
     setForm(emptyForm);
     setEditingId('');
@@ -73,7 +115,7 @@ export default function AdminDashboardPage() {
     if (
       !form.name.trim() ||
       !form.description.trim() ||
-      !form.image.trim() ||
+      !form.images.length ||
       form.price === '' ||
       form.stock === ''
     ) {
@@ -86,7 +128,8 @@ export default function AdminDashboardPage() {
       name: form.name.trim(),
       price: Number(form.price),
       description: form.description.trim(),
-      image: form.image.trim(),
+      image: form.images[0],
+      images: form.images,
       stock: Number(form.stock),
       featured: Boolean(form.featured),
       trending: Boolean(form.trending)
@@ -116,7 +159,7 @@ export default function AdminDashboardPage() {
       name: product.name,
       price: String(product.price),
       description: product.description,
-      image: product.image,
+      images: getProductImages(product),
       stock: String(product.stock),
       featured: Boolean(product.featured),
       trending: Boolean(product.trending)
@@ -253,15 +296,54 @@ export default function AdminDashboardPage() {
                 required
               />
             </div>
-            <input
-              type="url"
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              placeholder="Image URL"
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100"
-              required
-            />
+            <div className="space-y-4 rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">Product images</p>
+                  <p className="text-xs text-slate-500">Upload multiple images. The first one becomes the main image.</p>
+                </div>
+                <label className="cursor-pointer rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-white transition hover:bg-slate-800">
+                  Upload Images
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {form.images.length ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {form.images.map((image, index) => (
+                    <div key={`${image.slice(0, 24)}-${index}`} className="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white">
+                      <img
+                        src={image}
+                        alt={`Upload preview ${index + 1}`}
+                        className="h-40 w-full object-cover"
+                      />
+                      <div className="flex items-center justify-between px-3 py-3">
+                        <span className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                          {index === 0 ? 'Main image' : `Image ${index + 1}`}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm font-semibold text-slate-500">
+                  No images uploaded yet.
+                </div>
+              )}
+            </div>
             <textarea
               name="description"
               value={form.description}
@@ -352,7 +434,7 @@ export default function AdminDashboardPage() {
                         <td className="px-4 py-4">
                           <div className="flex items-start gap-3">
                             <img
-                              src={product.image}
+                              src={getPrimaryProductImage(product)}
                               alt={product.name}
                               className="h-16 w-16 rounded-2xl object-cover"
                             />

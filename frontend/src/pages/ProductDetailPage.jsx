@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getProduct } from '../lib/api';
 import { formatPrice } from '../lib/format';
+import { getProductImages } from '../lib/productImages';
 import { useCart } from '../context/CartContext';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 
@@ -13,6 +14,7 @@ export default function ProductDetailPage() {
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [notice, setNotice] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -21,6 +23,7 @@ export default function ProductDetailPage() {
         const data = await getProduct(id);
         setProduct(data);
         setQuantity(1);
+        setSelectedImage(getProductImages(data)[0] || '');
       } catch (err) {
         setError(err.message);
       } finally {
@@ -80,6 +83,8 @@ export default function ProductDetailPage() {
   }
 
   const soldOut = Number(product.stock || 0) <= 0;
+  const images = getProductImages(product);
+  const activeImage = selectedImage || images[0];
 
   return (
     <div className="space-y-6">
@@ -91,11 +96,32 @@ export default function ProductDetailPage() {
         <div className="overflow-hidden rounded-[2rem] border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
           <div className="aspect-square bg-slate-100">
             <img
-              src={product.image}
+              src={activeImage}
               alt={product.name}
               className="h-full w-full object-cover"
             />
           </div>
+          {images.length > 1 ? (
+            <div className="grid grid-cols-4 gap-3 p-4">
+              {images.map((image, index) => (
+                <button
+                  key={`${product._id}-${index}`}
+                  type="button"
+                  onClick={() => setSelectedImage(image)}
+                  className={[
+                    'overflow-hidden rounded-2xl border-2 bg-slate-100 transition',
+                    activeImage === image ? 'border-amber-500' : 'border-transparent hover:border-slate-200'
+                  ].join(' ')}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} view ${index + 1}`}
+                    className="h-20 w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="rounded-[2rem] border border-white/80 bg-white/90 p-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">

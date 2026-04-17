@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../lib/format';
+import { getPrimaryProductImage } from '../lib/productImages';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 
 export default function ProductCard({ product, onAddToCart }) {
   const soldOut = Number(product.stock || 0) <= 0;
+  const primaryImage = getPrimaryProductImage(product);
   const description =
     product.description.length > 95
       ? `${product.description.slice(0, 95)}...`
@@ -29,7 +31,7 @@ export default function ProductCard({ product, onAddToCart }) {
       <Link to={`/products/${product._id}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
           <img
-            src={product.image}
+            src={primaryImage}
             alt={product.name}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />

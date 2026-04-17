@@ -4,6 +4,7 @@
 
 ```text
 client2/
+  .env.example
   backend/
     src/
       config/db.js
@@ -16,7 +17,6 @@ client2/
         authRoutes.js
         productRoutes.js
       server.js
-    .env.example
     package.json
   frontend/
     src/
@@ -27,7 +27,6 @@ client2/
       App.jsx
       main.jsx
       index.css
-    .env.example
     index.html
     package.json
     postcss.config.js
@@ -77,12 +76,16 @@ Or double-click `run_project.bat` from the root folder.
    cd backend
    npm install
    ```
-2. Copy `.env.example` to `.env` and set:
+2. Copy the root `.env.example` to the root `.env` and set:
+   - `PORT`
    - `MONGO_URI`
    - `JWT_SECRET`
    - `ADMIN_USERNAME`
    - `ADMIN_PASSWORD`
    - `CLIENT_URL`
+   - `VITE_API_URL`
+   - `VITE_WHATSAPP_NUMBER`
+   - `VITE_STORE_NAME`
 3. Start backend:
    ```bash
    npm run dev
@@ -92,15 +95,11 @@ Or double-click `run_project.bat` from the root folder.
    cd ../frontend
    npm install
    ```
-5. Copy `frontend/.env.example` to `frontend/.env` and set:
-   - `VITE_API_URL`
-   - `VITE_WHATSAPP_NUMBER`
-   - `VITE_STORE_NAME`
-6. Start frontend:
+5. Start frontend:
    ```bash
    npm run dev
    ```
-7. Open the website admin at `/admin_login`
+6. Open the website admin at `/admin_login`
 
 ## API Endpoints
 
@@ -117,3 +116,4 @@ Or double-click `run_project.bat` from the root folder.
 - Checkout opens WhatsApp with a prefilled order message.
 - Product create, update, and delete routes are protected with JWT.
 - The admin panel is website-only now. There is no mobile app or APK in this repo.
+- The project now uses a single root `.env` file for both backend and frontend settings.

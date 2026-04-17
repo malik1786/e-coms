@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
 const { getIsConnected } = require('../config/db');
+const { normalizeImages } = require('../utils/productImages');
 
 // ─── In-memory storage for products ─────────────────────────────────────────
 // This stores data in server RAM as a FALLBACK if MongoDB is not connected.
@@ -11,6 +12,7 @@ let products = [
     description: 'A majestic blend of aged agarwood from the forests of Cambodia. Deep, woody, and intensely long-lasting.',
     image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800',
     stock: 8,
+    images: ['https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=800'],
     featured: true,
     trending: true,
     createdAt: new Date('2026-04-01T10:00:00Z')
@@ -22,6 +24,7 @@ let products = [
     description: 'A delicate fusion of fresh Taif rose petals and pure white musk. A clean, floral signature scent.',
     image: 'https://images.unsplash.com/photo-1583445013765-46c20c4a6772?auto=format&fit=crop&q=80&w=800',
     stock: 15,
+    images: ['https://images.unsplash.com/photo-1583445013765-46c20c4a6772?auto=format&fit=crop&q=80&w=800'],
     featured: true,
     trending: false,
     createdAt: new Date('2026-04-02T10:00:00Z')
@@ -33,6 +36,7 @@ let products = [
     description: 'A sophisticated combination of saffron, amber, and warm spices. Captures the essence of Arabian nights.',
     image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800',
     stock: 12,
+    images: ['https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800'],
     featured: false,
     trending: true,
     createdAt: new Date('2026-04-03T10:00:00Z')
@@ -347,12 +351,21 @@ const createProduct = async (req, res) => {
       price,
       description,
       image,
+      images,
       stock,
       featured = false,
       trending = false
     } = req.body;
 
-    if (!name || price === undefined || !description || !image || stock === undefined) {
+    const normalizedImages = normalizeImages({ image, images });
+
+    if (
+      !name ||
+      price === undefined ||
+      !description ||
+      !normalizedImages.image ||
+      stock === undefined
+    ) {
       return res.status(400).json({ message: 'All product fields are required' });
     }
 
@@ -363,7 +376,8 @@ const createProduct = async (req, res) => {
           name,
           price,
           description,
-          image,
+          image: normalizedImages.image,
+          images: normalizedImages.images,
           stock,
           featured: Boolean(featured),
           trending: Boolean(trending)
@@ -380,7 +394,8 @@ const createProduct = async (req, res) => {
       name: name.trim(),
       price: Number(price),
       description: description.trim(),
-      image: image.trim(),
+      image: normalizedImages.image,
+      images: normalizedImages.images,
       stock: Number(stock),
       featured: Boolean(featured),
       trending: Boolean(trending),
@@ -441,6 +456,9 @@ const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const update = { ...req.body };
+    if (update.image !== undefined || update.images !== undefined) {
+      Object.assign(update, normalizeImages(update));
+    }
     if (update.price !== undefined) update.price = Number(update.price);
     if (update.stock !== undefined) update.stock = Number(update.stock);
     if (update.featured !== undefined) update.featured = Boolean(update.featured);
