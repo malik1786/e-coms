@@ -1,58 +1,57 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-
-const authRoutes = require('./routes/authRoutes');
-const productRoutes = require('./routes/productRoutes');
-const connectDB = require('./config/db');
-
-dotenv.config();
-connectDB();
 
 const app = express();
 
-// IMPORTANT: frontend URL
-const CLIENT_URL = process.env.CLIENT_URL;
+app.use(express.json());
 
 // ======================
-// CORS CONFIG (FIXED)
+// ENV
+// ======================
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+
+// ======================
+// CORS (FIXED + SAFE)
 // ======================
 app.use(cors({
-  origin: [
-    CLIENT_URL,
-    'http://localhost:5173'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      CLIENT_URL,
+      'http://localhost:5173'
+    ];
+
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-app.use(express.json());
+// ======================
+// HANDLE PREFLIGHT REQUESTS (IMPORTANT)
+// ======================
+app.options('*', cors());
 
 // ======================
 // ROOT
 // ======================
 app.get('/', (req, res) => {
-  res.json({
-    message: 'E-coms API is running',
-    version: '1.0.0'
-  });
+  res.json({ message: 'API Running' });
 });
 
 // ======================
-// HEALTH CHECK
+// ROUTES
 // ======================
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
+app.use('/api/products', require('./routes/products'));
+app.use('/api/auth', require('./routes/auth'));
 
 // ======================
-// API ROUTES (ONLY ONE STYLE)
-// ======================
-app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
-
-// ======================
-// 404 HANDLER
+// 404
 // ======================
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
@@ -61,10 +60,11 @@ app.use((req, res) => {
 // ======================
 // ERROR HANDLER
 // ======================
-app.use((error, req, res, next) => {
-  console.error(error);
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.message);
+
   res.status(500).json({
-    message: error.message || 'Server error'
+    message: err.message || 'Server error'
   });
 });
 
