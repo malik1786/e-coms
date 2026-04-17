@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
           Login to manage products
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Use the admin credentials defined in the backend environment file.
+          Use the admin credentials defined in `backend/src/config/admin.js`.
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>

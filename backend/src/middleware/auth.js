@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config/admin');
 
 const requireAdmin = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
@@ -11,7 +12,7 @@ const requireAdmin = (req, res, next) => {
   }
 
   try {
-    req.admin = jwt.verify(token, process.env.JWT_SECRET);
+    req.admin = jwt.verify(token, JWT_SECRET);
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid or expired token' });
