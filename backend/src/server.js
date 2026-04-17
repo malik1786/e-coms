@@ -16,20 +16,26 @@ app.use(express.json());
 // ======================
 // ENV
 // ======================
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+const EXPLICIT_CLIENT_URL = (process.env.CLIENT_URL || '').trim();
+const PORT = process.env.PORT || 5000;
 
 // ======================
 // CORS (FIXED + SAFE)
 // ======================
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
+    // If CLIENT_URL isn't set (common on first deploy), allow requests so the app works.
+    // Set CLIENT_URL in production to lock this down.
+    const allowAnyOrigin = !EXPLICIT_CLIENT_URL;
+
     const allowedOrigins = [
-      CLIENT_URL,
-      'http://localhost:5173'
-    ];
+      EXPLICIT_CLIENT_URL,
+      'http://localhost:5173',
+      'http://127.0.0.1:5173'
+    ].filter(Boolean);
 
     // allow requests with no origin (like mobile apps or curl)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowAnyOrigin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -38,12 +44,14 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // ======================
 // HANDLE PREFLIGHT REQUESTS (IMPORTANT)
 // ======================
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // ======================
 // ROOT
@@ -55,8 +63,13 @@ app.get('/', (req, res) => {
 // ======================
 // ROUTES
 // ======================
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/auth', require('./routes/authRoutes'));
+const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/authRoutes');
+
+// Support both "/api/*" and bare routes. This makes local dev and Vercel
+// (when using routePrefix="/api") work without double-prefix issues.
+app.use(['/api/products', '/products'], productRoutes);
+app.use(['/api/auth', '/auth'], authRoutes);
 
 // ======================
 // 404
@@ -75,5 +88,11 @@ app.use((err, req, res, next) => {
     message: err.message || 'Server error'
   });
 });
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`API listening on port ${PORT}`);
+  });
+}
 
 module.exports = app;

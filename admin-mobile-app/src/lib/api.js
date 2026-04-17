@@ -1,6 +1,11 @@
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TOKEN_KEY = 'client2_admin_token';
 
+function getApiBase() {
+  if (!API_URL) return '/api';
+  return API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+}
+
 /**
  * Universal API request handler
  */
@@ -23,7 +28,8 @@ async function request(path, options = {}) {
   }
 
   // Build final URL
-  const url = `${API_URL}${path.startsWith('/') ? path : `/${path}`}`;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const url = `${getApiBase()}${normalizedPath}`;
 
   const response = await fetch(url, {
     ...rest,
