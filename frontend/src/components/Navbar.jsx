@@ -2,7 +2,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
 
-const brandName = import.meta.env.VITE_STORE_NAME || 'Nova Store';
+const brandName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 
 const navClass = ({ isActive }) =>
   [
@@ -14,21 +14,21 @@ const navClass = ({ isActive }) =>
 
 export default function Navbar() {
   const { itemCount } = useCart();
-  const { isAuthenticated, logout } = useAdminAuth();
+  const { isAuthenticated } = useAdminAuth();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/70 bg-white/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-white/70 bg-[#fffaf2]/85 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-slate-950 text-lg font-black text-white shadow-glow">
-            N
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-slate-950 text-sm font-black uppercase tracking-[0.22em] text-white shadow-glow">
+            NP
           </span>
           <span className="leading-tight">
             <span className="block text-lg font-black tracking-tight text-slate-950">
               {brandName}
             </span>
-            <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-              Simple commerce
+            <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
+              Oud, Attar, Bakhoor
             </span>
           </span>
         </Link>
@@ -46,6 +46,11 @@ export default function Navbar() {
               {itemCount}
             </span>
           </NavLink>
+          {isAuthenticated ? (
+            <NavLink to="/admin" className={navClass}>
+              Admin
+            </NavLink>
+          ) : null}
         </nav>
       </div>
     </header>

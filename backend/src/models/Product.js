@@ -27,6 +27,14 @@ const productSchema = new mongoose.Schema({
     min: 0,
     default: 0
   },
+  featured: {
+    type: Boolean,
+    default: false
+  },
+  trending: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

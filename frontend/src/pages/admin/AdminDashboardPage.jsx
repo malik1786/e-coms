@@ -9,7 +9,9 @@ const emptyForm = {
   price: '',
   description: '',
   image: '',
-  stock: ''
+  stock: '',
+  featured: false,
+  trending: false
 };
 
 export default function AdminDashboardPage() {
@@ -43,16 +45,17 @@ export default function AdminDashboardPage() {
     () => [
       { label: 'Total products', value: products.length },
       { label: 'In stock', value: products.filter((product) => product.stock > 0).length },
-      { label: 'Out of stock', value: products.filter((product) => product.stock <= 0).length }
+      { label: 'Featured', value: products.filter((product) => product.featured).length },
+      { label: 'Trending', value: products.filter((product) => product.trending).length }
     ],
     [products]
   );
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
     setForm((current) => ({
       ...current,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -84,7 +87,9 @@ export default function AdminDashboardPage() {
       price: Number(form.price),
       description: form.description.trim(),
       image: form.image.trim(),
-      stock: Number(form.stock)
+      stock: Number(form.stock),
+      featured: Boolean(form.featured),
+      trending: Boolean(form.trending)
     };
 
     try {
@@ -112,7 +117,9 @@ export default function AdminDashboardPage() {
       price: String(product.price),
       description: product.description,
       image: product.image,
-      stock: String(product.stock)
+      stock: String(product.stock),
+      featured: Boolean(product.featured),
+      trending: Boolean(product.trending)
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -174,7 +181,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-4">
           {stats.map((item) => (
             <div
               key={item.label}
@@ -264,6 +271,28 @@ export default function AdminDashboardPage() {
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100"
               required
             />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={form.featured}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                />
+                Show in featured section
+              </label>
+              <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  name="trending"
+                  checked={form.trending}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                />
+                Show in trending section
+              </label>
+            </div>
           </div>
 
           {error ? (
@@ -313,6 +342,7 @@ export default function AdminDashboardPage() {
                       <th className="px-4 py-4">Product</th>
                       <th className="px-4 py-4">Price</th>
                       <th className="px-4 py-4">Stock</th>
+                      <th className="px-4 py-4">Tags</th>
                       <th className="px-4 py-4">Actions</th>
                     </tr>
                   </thead>
@@ -338,6 +368,25 @@ export default function AdminDashboardPage() {
                           {formatPrice(product.price)}
                         </td>
                         <td className="px-4 py-4 font-bold text-slate-800">{product.stock}</td>
+                        <td className="px-4 py-4">
+                          <div className="flex flex-wrap gap-2">
+                            {product.featured ? (
+                              <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-amber-800">
+                                Featured
+                              </span>
+                            ) : null}
+                            {product.trending ? (
+                              <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-rose-700">
+                                Trending
+                              </span>
+                            ) : null}
+                            {!product.featured && !product.trending ? (
+                              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                                Standard
+                              </span>
+                            ) : null}
+                          </div>
+                        </td>
                         <td className="px-4 py-4">
                           <div className="flex flex-wrap gap-2">
                             <button

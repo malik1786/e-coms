@@ -44,7 +44,7 @@ export default function ProductDetailPage() {
     if (!product) return;
     const link = buildWhatsAppLink({
       phone: import.meta.env.VITE_WHATSAPP_NUMBER,
-      storeName: import.meta.env.VITE_STORE_NAME,
+      storeName: import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes',
       items: [{ ...product, qty: quantity }],
       total: product.price * quantity
     });

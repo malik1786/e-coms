@@ -7,7 +7,7 @@ export default function CartPage() {
   const { cart, updateQty, removeFromCart, clearCart, subtotal } = useCart();
 
   const phone = import.meta.env.VITE_WHATSAPP_NUMBER;
-  const storeName = import.meta.env.VITE_STORE_NAME || 'Nova Store';
+  const storeName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 
   const handleCheckout = () => {
     if (!phone) {
