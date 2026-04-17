@@ -23,7 +23,7 @@ async function request(path, options = {}) {
   }
 
   // Build final URL
-  const url = `${API_URL}/api${path.startsWith('/') ? path : `/${path}`}`;
+  const url = `${API_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
   const response = await fetch(url, {
     ...rest,
