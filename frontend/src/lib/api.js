@@ -1,13 +1,9 @@
-// In dev the Vite proxy forwards /products & /auth to localhost:5000 – no CORS needed.
-// In production the full URL from .env is used.
-// In production, we use the VITE_API_URL env var. In dev, we use an empty string to trigger the Vite proxy.
-const API_URL = import.meta.env.PROD 
-  ? (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') 
-  : '';
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TOKEN_KEY = 'client2_admin_token';
 
 async function request(path, options = {}) {
   const { auth = true, body, headers = {}, ...rest } = options;
+
   const requestHeaders = { ...headers };
 
   if (body !== undefined) {
@@ -21,21 +17,22 @@ async function request(path, options = {}) {
     }
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
+  // 🔥 ALWAYS enforce /api prefix
+  const url = `${API_URL}/api${path.startsWith('/') ? path : `/${path}`}`;
+
+  const response = await fetch(url, {
     ...rest,
     body,
     headers: requestHeaders
   });
 
   const text = await response.text();
-  let data = null;
 
-  if (text) {
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = text;
-    }
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
   }
 
   if (!response.ok) {
@@ -45,25 +42,40 @@ async function request(path, options = {}) {
   return data;
 }
 
-export const getProducts = () => request('/products', { auth: false });
-export const getProduct = (id) => request(`/products/${id}`, { auth: false });
-export const loginAdmin = (credentials) =>
-  request('/auth/login', {
-    method: 'POST',
-    auth: false,
-    body: JSON.stringify(credentials)
-  });
+/* =========================
+   PRODUCT APIs
+========================= */
+
+export const getProducts = () =>
+  request('/products', { auth: false });
+
+export const getProduct = (id) =>
+  request(`/products/${id}`, { auth: false });
+
 export const createProduct = (payload) =>
   request('/products', {
     method: 'POST',
     body: JSON.stringify(payload)
   });
+
 export const updateProduct = (id, payload) =>
   request(`/products/${id}`, {
     method: 'PUT',
     body: JSON.stringify(payload)
   });
+
 export const deleteProduct = (id) =>
   request(`/products/${id}`, {
     method: 'DELETE'
+  });
+
+/* =========================
+   AUTH APIs
+========================= */
+
+export const loginAdmin = (credentials) =>
+  request('/auth/login', {
+    method: 'POST',
+    auth: false,
+    body: JSON.stringify(credentials)
   });
