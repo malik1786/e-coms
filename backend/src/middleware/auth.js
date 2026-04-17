@@ -1,21 +1,21 @@
-const express = require('express');
-const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
-const app = express();
+const requireAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ')
+    ? authHeader.slice(7)
+    : null;
 
-app.use(express.json());
+  if (!token) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
 
-// CORS (IMPORTANT for Vercel frontend)
-app.use(cors({
-  origin: [
-    'https://your-frontend.vercel.app',
-    'http://localhost:5173'
-  ],
-  credentials: true
-}));
+  try {
+    req.admin = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};
 
-// Routes example
-app.use('/api/products', require('./routes/products'));
-app.use('/api/auth', require('./routes/auth'));
-
-module.exports = app;
+module.exports = requireAdmin;
