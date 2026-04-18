@@ -69,20 +69,20 @@ export default function SmartSearchBar({
           onBlur={() => window.setTimeout(() => setFocused(false), 120)}
           placeholder={placeholder}
           className={[
-            'w-full rounded-full border border-slate-200 bg-white/95 pl-11 pr-28 text-sm outline-none transition focus:border-amber-500 focus:ring-4 focus:ring-amber-100',
+            'w-full rounded-full bg-white/95 pl-11 pr-28 text-sm text-[var(--np-ink)] outline-none shadow-[0_12px_30px_rgba(27,28,26,0.05)] transition focus:ring-4 focus:ring-[rgba(205,158,45,0.18)]',
             compact ? 'py-3' : 'py-4'
           ].join(' ')}
         />
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-white transition hover:bg-slate-800"
+          className="gold-button absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] transition hover:brightness-105"
         >
           Search
         </button>
       </form>
 
       {showSuggestions ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white/98 shadow-[0_25px_60px_rgba(15,23,42,0.14)] backdrop-blur">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] bg-white/98 shadow-[0_25px_60px_rgba(15,23,42,0.14)] backdrop-blur">
           {suggestions.length ? (
             <div className="divide-y divide-slate-100">
               {suggestions.map((product) => (

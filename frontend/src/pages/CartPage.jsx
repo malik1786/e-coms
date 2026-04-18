@@ -1,23 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../lib/format';
-import { buildWhatsAppLink } from '../lib/whatsapp';
+import { buildWhatsAppLink, DEFAULT_WHATSAPP_NUMBER } from '../lib/whatsapp';
 
 export default function CartPage() {
   const { cart, updateQty, removeFromCart, clearCart, subtotal } = useCart();
 
-  const phone = import.meta.env.VITE_WHATSAPP_NUMBER;
+  const phone = import.meta.env.VITE_WHATSAPP_NUMBER || DEFAULT_WHATSAPP_NUMBER;
   const storeName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 
   const handleCheckout = () => {
-    if (!phone) {
-      window.alert('Set VITE_WHATSAPP_NUMBER in frontend/.env to enable checkout.');
-      return;
-    }
-
-    if (!cart.length) {
-      return;
-    }
+    if (!cart.length) return;
 
     const checkoutUrl = buildWhatsAppLink({
       phone,
@@ -31,24 +24,14 @@ export default function CartPage() {
 
   if (!cart.length) {
     return (
-      <div className="rounded-[1.75rem] border border-white/80 bg-white/90 p-10 text-center shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-        <h1 className="text-3xl font-black tracking-tight text-slate-950">
-          Your cart is empty
-        </h1>
-        <p className="mt-3 text-slate-600">
-          Browse products and add items before opening WhatsApp checkout.
-        </p>
+      <div className="rounded-[2rem] bg-white/86 p-10 text-center shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
+        <h1 className="font-editorial text-4xl text-[var(--np-ink)]">Your cart is empty</h1>
+        <p className="mt-3 text-[var(--np-muted)]">Browse products and add items before opening WhatsApp checkout.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/products"
-            className="rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
-          >
+          <Link to="/products" className="gold-button rounded-full px-5 py-3 text-sm font-semibold">
             Continue shopping
           </Link>
-          <Link
-            to="/"
-            className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
-          >
+          <Link to="/" className="rounded-full bg-[var(--np-surface)] px-5 py-3 text-sm font-semibold text-[var(--np-ink)]">
             Go home
           </Link>
         </div>
@@ -57,114 +40,125 @@ export default function CartPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 lg:space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-amber-600">
-            Cart
-          </p>
-          <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">
-            Review your order
-          </h1>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--np-gold)]">Cart</p>
+          <h1 className="font-editorial mt-2 text-4xl text-[var(--np-ink)] lg:text-5xl">Review your order</h1>
         </div>
-        <button
-          type="button"
-          onClick={clearCart}
-          className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50"
-        >
+        <button type="button" onClick={clearCart} className="rounded-full bg-[var(--np-surface)] px-5 py-3 text-sm font-semibold text-[var(--np-ink)]">
           Clear cart
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
-        <section className="space-y-4">
-          {cart.map((item) => (
-            <article
-              key={item._id}
-              className="flex flex-col gap-4 rounded-[1.75rem] border border-white/80 bg-white/90 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:flex-row"
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-36 w-full rounded-[1.25rem] object-cover sm:w-36"
-              />
-
-              <div className="flex-1">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-lg font-black tracking-tight text-slate-950">
-                      {item.name}
-                    </h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                      {formatPrice(item.price)} each
-                    </p>
-                  </div>
-                  <p className="text-lg font-black text-amber-600">
-                    {formatPrice(item.price * item.qty)}
-                  </p>
+      <section className="lg:hidden space-y-5">
+        {cart.map((item) => (
+          <article key={item._id} className="overflow-hidden rounded-[1.8rem] bg-white/84 shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
+            <div className="aspect-[4/3] bg-[var(--np-surface)]">
+              <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+            </div>
+            <div className="space-y-4 p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-editorial text-2xl text-[var(--np-ink)]">{item.name}</h2>
+                  <p className="mt-1 text-sm text-[var(--np-muted)]">{formatPrice(item.price)} each</p>
                 </div>
+                <p className="text-lg font-semibold text-[var(--np-gold)]">{formatPrice(item.price * item.qty)}</p>
+              </div>
 
-                <div className="mt-5 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => (item.qty === 1 ? removeFromCart(item._id) : updateQty(item._id, item.qty - 1))}
+                  className="h-11 w-11 rounded-full bg-[var(--np-surface)] text-lg text-[var(--np-ink)]"
+                >
+                  -
+                </button>
+                <div className="min-w-16 rounded-full bg-[var(--np-surface)] px-4 py-3 text-center text-sm text-[var(--np-ink)]">{item.qty}</div>
+                <button type="button" onClick={() => updateQty(item._id, item.qty + 1)} className="h-11 w-11 rounded-full bg-[var(--np-surface)] text-lg text-[var(--np-ink)]">
+                  +
+                </button>
+                <button type="button" onClick={() => removeFromCart(item._id)} className="ml-auto rounded-full bg-rose-50 px-4 py-2 text-sm text-rose-700">
+                  Remove
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+
+        <aside className="rounded-[1.9rem] bg-[var(--np-ink)] p-6 text-white">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#f0c562]">Summary</p>
+          <div className="mt-5 space-y-3 text-sm text-white/78">
+            <div className="flex items-center justify-between">
+              <span>Items</span>
+              <span>{cart.reduce((total, item) => total + item.qty, 0)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Subtotal</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+          </div>
+          <button type="button" onClick={handleCheckout} className="mt-6 w-full rounded-full bg-white px-5 py-4 text-sm font-semibold text-[var(--np-ink)]">
+            Checkout on WhatsApp
+          </button>
+        </aside>
+      </section>
+
+      <section className="hidden lg:grid lg:grid-cols-[1.15fr_.85fr] lg:gap-8">
+        <div className="space-y-4">
+          {cart.map((item) => (
+            <article key={item._id} className="flex gap-5 rounded-[2rem] bg-white/84 p-5 shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
+              <img src={item.image} alt={item.name} className="h-40 w-40 rounded-[1.4rem] object-cover" />
+              <div className="flex flex-1 flex-col justify-between">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="font-editorial text-3xl text-[var(--np-ink)]">{item.name}</h2>
+                    <p className="mt-2 text-sm text-[var(--np-muted)]">{formatPrice(item.price)} each</p>
+                  </div>
+                  <p className="text-xl font-semibold text-[var(--np-gold)]">{formatPrice(item.price * item.qty)}</p>
+                </div>
+                <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={() =>
-                      item.qty === 1
-                        ? removeFromCart(item._id)
-                        : updateQty(item._id, item.qty - 1)
-                    }
-                    className="h-11 w-11 rounded-2xl border border-slate-200 bg-white text-lg font-black text-slate-800 transition hover:bg-slate-50"
+                    onClick={() => (item.qty === 1 ? removeFromCart(item._id) : updateQty(item._id, item.qty - 1))}
+                    className="h-12 w-12 rounded-full bg-[var(--np-surface)] text-lg text-[var(--np-ink)]"
                   >
                     -
                   </button>
-                  <div className="min-w-20 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-center text-sm font-bold text-slate-700">
-                    {item.qty}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => updateQty(item._id, item.qty + 1)}
-                    className="h-11 w-11 rounded-2xl border border-slate-200 bg-white text-lg font-black text-slate-800 transition hover:bg-slate-50"
-                  >
+                  <div className="min-w-20 rounded-full bg-[var(--np-surface)] px-5 py-3 text-center text-sm text-[var(--np-ink)]">{item.qty}</div>
+                  <button type="button" onClick={() => updateQty(item._id, item.qty + 1)} className="h-12 w-12 rounded-full bg-[var(--np-surface)] text-lg text-[var(--np-ink)]">
                     +
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => removeFromCart(item._id)}
-                    className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700 transition hover:bg-rose-100"
-                  >
+                  <button type="button" onClick={() => removeFromCart(item._id)} className="rounded-full bg-rose-50 px-4 py-2 text-sm text-rose-700">
                     Remove
                   </button>
                 </div>
               </div>
             </article>
           ))}
-        </section>
+        </div>
 
-        <aside className="h-fit rounded-[2rem] border border-slate-900 bg-slate-950 p-8 text-white shadow-glow">
-          <p className="text-sm font-bold uppercase tracking-[0.35em] text-orange-300">
-            Summary
-          </p>
-          <div className="mt-6 space-y-3">
-            <div className="flex items-center justify-between text-sm text-slate-300">
+        <aside className="h-fit rounded-[2.2rem] bg-[var(--np-ink)] p-8 text-white">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#f0c562]">Summary</p>
+          <h2 className="font-editorial mt-4 text-4xl">Private checkout</h2>
+          <div className="mt-6 space-y-3 text-sm text-white/78">
+            <div className="flex items-center justify-between">
               <span>Items</span>
               <span>{cart.reduce((total, item) => total + item.qty, 0)}</span>
             </div>
-            <div className="flex items-center justify-between text-sm text-slate-300">
+            <div className="flex items-center justify-between">
               <span>Subtotal</span>
               <span>{formatPrice(subtotal)}</span>
             </div>
           </div>
-          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-sm leading-6 text-slate-300">
-            Orders are sent directly to WhatsApp. No payment gateway is used.
+          <div className="mt-6 rounded-[1.5rem] bg-white/8 p-5 text-sm leading-7 text-white/72">
+            Orders are sent directly to WhatsApp, keeping the desktop checkout calm and conversational instead of form-heavy.
           </div>
-          <button
-            type="button"
-            onClick={handleCheckout}
-            className="mt-6 w-full rounded-2xl bg-white px-5 py-4 text-sm font-black text-slate-950 transition hover:bg-slate-100"
-          >
+          <button type="button" onClick={handleCheckout} className="mt-6 w-full rounded-full bg-white px-5 py-4 text-sm font-semibold text-[var(--np-ink)]">
             Checkout on WhatsApp
           </button>
         </aside>
-      </div>
+      </section>
     </div>
   );
 }

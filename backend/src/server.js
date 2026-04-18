@@ -17,23 +17,33 @@ app.use(express.json());
 // ======================
 // ENV
 // ======================
-const EXPLICIT_CLIENT_URL = (process.env.CLIENT_URL || '').trim();
+const CLIENT_URLS = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((value) => value.trim())
+  .filter(Boolean);
 const PORT = process.env.PORT || 5000;
+
+const getAllowedOrigins = () => {
+  const origins = new Set([
+    ...CLIENT_URLS,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
+  ]);
+
+  if (process.env.VERCEL_URL) {
+    origins.add(`https://${process.env.VERCEL_URL}`);
+  }
+
+  return [...origins];
+};
 
 // ======================
 // CORS (FIXED + SAFE)
 // ======================
 const corsOptions = {
   origin: function (origin, callback) {
-    // If CLIENT_URL isn't set (common on first deploy), allow requests so the app works.
-    // Set CLIENT_URL in production to lock this down.
-    const allowAnyOrigin = !EXPLICIT_CLIENT_URL;
-
-    const allowedOrigins = [
-      EXPLICIT_CLIENT_URL,
-      'http://localhost:5173',
-      'http://127.0.0.1:5173'
-    ].filter(Boolean);
+    const allowedOrigins = getAllowedOrigins();
+    const allowAnyOrigin = allowedOrigins.length === 2; // localhost only fallback
 
     // allow requests with no origin (like mobile apps or curl)
     if (!origin || allowAnyOrigin || allowedOrigins.includes(origin)) {
@@ -59,6 +69,13 @@ app.options('*', cors(corsOptions));
 // ======================
 app.get('/', (req, res) => {
   res.json({ message: 'API Running' });
+});
+
+app.get(['/health', '/api/health'], (req, res) => {
+  res.json({
+    ok: true,
+    message: 'API healthy'
+  });
 });
 
 // ======================

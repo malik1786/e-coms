@@ -1,14 +1,23 @@
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TOKEN_KEY = 'client2_admin_token';
 
-function getApiBaseCandidates() {
-  if (API_URL) {
-    const normalized = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
-    return [normalized];
+function normalizeBaseUrl(value) {
+  if (!value) {
+    return '';
   }
 
-  // On some Vercel setups the backend is mounted under "/api",
-  // while in others the same Express app may be reachable via bare routes.
+  return value.endsWith('/api') ? value : `${value}/api`;
+}
+
+function getApiBaseCandidates() {
+  if (API_URL) {
+    return [normalizeBaseUrl(API_URL)];
+  }
+
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return ['/api', normalizeBaseUrl(window.location.origin), ''];
+  }
+
   return ['/api', ''];
 }
 
