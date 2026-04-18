@@ -22,7 +22,8 @@ const mobileItems = [
   { to: '/', label: 'Home', icon: 'H' },
   { to: '/products', label: 'Browse', icon: 'B' },
   { to: '/products?q=oud', label: 'Search', icon: 'S', match: '/products' },
-  { to: '/cart', label: 'Cart', icon: 'C' }
+  { to: '/cart', label: 'Cart', icon: 'C' },
+  { href: mapsUrl, label: 'Store', icon: 'L' }
 ];
 
 export default function Navbar() {
@@ -130,47 +131,56 @@ export default function Navbar() {
           <div className="mt-3">
             <SmartSearchBar products={products} compact placeholder="Search fragrances, oud, musk..." />
           </div>
-
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 flex items-center justify-between rounded-full bg-[var(--np-surface)] px-3 py-2 transition hover:bg-white"
-            aria-label="Open store location in Google Maps"
-          >
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--np-gold)]">
-                Store Location
-              </p>
-              <p className="truncate text-[11px] text-[var(--np-muted)]">
-                Kondhwa, Pune 411048
-              </p>
-            </div>
-            <span className="ml-3 whitespace-nowrap text-[11px] font-semibold text-[var(--np-gold)]">
-              Maps
-            </span>
-          </a>
         </div>
       </header>
 
       <div className="fixed inset-x-0 bottom-0 z-50 px-3 pb-3 lg:hidden">
-        <nav className="glass-panel mx-auto flex max-w-[560px] items-center justify-between rounded-[1.7rem] px-3 py-3 shadow-[0_18px_40px_rgba(27,28,26,0.12)]">
+        <nav className="glass-panel mx-auto flex max-w-[560px] items-center justify-between rounded-[1.45rem] px-2 py-2 shadow-[0_18px_40px_rgba(27,28,26,0.12)]">
           {mobileItems.map((item) => {
-            const active = item.match ? location.pathname === item.match : location.pathname === item.to;
+            const active = item.to
+              ? item.match
+                ? location.pathname === item.match
+                : location.pathname === item.to
+              : false;
+
+            const className = [
+              'flex min-w-0 flex-1 flex-col items-center justify-center rounded-[0.95rem] px-1 py-1.5 text-[10px] font-medium transition',
+              active
+                ? 'bg-[var(--np-gold)] text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]'
+                : 'text-[var(--np-muted)]'
+            ].join(' ');
+
+            const content = (
+              <>
+                <span className="text-[12px] font-semibold">{item.icon}</span>
+                <span className="mt-1">{item.label}</span>
+              </>
+            );
+
+            if (item.href) {
+              return (
+                <a
+                  key={`${item.label}-${item.href}`}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={className}
+                  aria-label="Open store location in Google Maps"
+                >
+                  {content}
+                </a>
+              );
+            }
 
             return (
               <Link
                 key={`${item.label}-${item.to}`}
                 to={item.to}
                 className={[
-                  'flex min-w-[68px] flex-col items-center justify-center rounded-[1.1rem] px-2 py-2 text-[11px] font-medium transition',
-                  active
-                    ? 'bg-[var(--np-gold)] text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]'
-                    : 'text-[var(--np-muted)]'
+                  className
                 ].join(' ')}
               >
-                <span className="text-sm font-semibold">{item.icon}</span>
-                <span className="mt-1">{item.label}</span>
+                {content}
               </Link>
             );
           })}
