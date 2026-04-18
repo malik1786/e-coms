@@ -67,21 +67,6 @@ export default function Navbar() {
           </div>
 
           <div className="glass-panel flex items-center gap-6 rounded-[1.6rem] px-5 py-4 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="w-[260px] rounded-[1.1rem] bg-[var(--np-surface)] px-4 py-3 transition hover:bg-white"
-              aria-label="Open store location in Google Maps"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
-                GPS Location
-              </p>
-              <p className="mt-1 truncate text-xs text-[var(--np-muted)]">
-                {storeLocation}
-              </p>
-            </a>
-
             <nav className="flex min-w-0 flex-1 items-center justify-center gap-6 xl:gap-7">
               <NavLink to="/" className={desktopNavClass}>
                 Home
@@ -115,6 +100,21 @@ export default function Navbar() {
                 <span className="ml-1 text-xs">{itemCount}</span>
               </Link>
             </div>
+
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="w-[260px] rounded-[1.1rem] bg-[var(--np-surface)] px-4 py-3 transition hover:bg-white"
+              aria-label="Open store location in Google Maps"
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
+                GPS Location
+              </p>
+              <p className="mt-1 truncate text-xs text-[var(--np-muted)]">
+                {storeLocation}
+              </p>
+            </a>
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../lib/format';
 import { buildWhatsAppLink, DEFAULT_WHATSAPP_NUMBER } from '../lib/whatsapp';
+import { handleProductImageError } from '../lib/productImages';
 
 export default function CartPage() {
   const { cart, updateQty, removeFromCart, clearCart, subtotal } = useCart();
@@ -55,7 +56,7 @@ export default function CartPage() {
         {cart.map((item) => (
           <article key={item._id} className="overflow-hidden rounded-[1.8rem] bg-white/84 shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
             <div className="aspect-[4/3] bg-[var(--np-surface)]">
-              <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+              <img src={item.image} alt={item.name} onError={handleProductImageError} className="h-full w-full object-cover" />
             </div>
             <div className="space-y-4 p-5">
               <div className="flex items-start justify-between gap-3">
@@ -108,7 +109,7 @@ export default function CartPage() {
         <div className="space-y-4">
           {cart.map((item) => (
             <article key={item._id} className="flex gap-5 rounded-[2rem] bg-white/84 p-5 shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
-              <img src={item.image} alt={item.name} className="h-40 w-40 rounded-[1.4rem] object-cover" />
+              <img src={item.image} alt={item.name} onError={handleProductImageError} className="h-40 w-40 rounded-[1.4rem] object-cover" />
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-4">
                   <div>

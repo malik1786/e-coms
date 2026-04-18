@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../lib/format';
-import { getPrimaryProductImage } from '../lib/productImages';
+import { getPrimaryProductImage, handleProductImageError } from '../lib/productImages';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 
 const inferFamily = (product) => {
@@ -55,6 +55,7 @@ export default function ProductCard({ product, onAddToCart }) {
           <img
             src={primaryImage}
             alt={product.name}
+            onError={handleProductImageError}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">

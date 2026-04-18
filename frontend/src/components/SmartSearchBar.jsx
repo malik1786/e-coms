@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../lib/format';
 import { getSearchSuggestions } from '../lib/search';
+import { handleProductImageError } from '../lib/productImages';
 
 export default function SmartSearchBar({
   products,
@@ -94,6 +95,7 @@ export default function SmartSearchBar({
                   <img
                     src={product.image}
                     alt={product.name}
+                    onError={handleProductImageError}
                     className="h-14 w-14 rounded-2xl object-cover"
                   />
                   <div className="min-w-0 flex-1">

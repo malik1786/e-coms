@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createProduct, deleteProduct, getProducts, updateProduct } from '../../lib/api';
 import { formatPrice } from '../../lib/format';
-import { getProductImages, getPrimaryProductImage } from '../../lib/productImages';
+import { getProductImages, getPrimaryProductImage, handleProductImageError } from '../../lib/productImages';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const emptyForm = {
@@ -321,6 +321,7 @@ export default function AdminDashboardPage() {
                       <img
                         src={image}
                         alt={`Upload preview ${index + 1}`}
+                        onError={handleProductImageError}
                         className="h-40 w-full object-cover"
                       />
                       <div className="flex items-center justify-between px-3 py-3">
@@ -436,6 +437,7 @@ export default function AdminDashboardPage() {
                             <img
                               src={getPrimaryProductImage(product)}
                               alt={product.name}
+                              onError={handleProductImageError}
                               className="h-16 w-16 rounded-2xl object-cover"
                             />
                             <div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getProduct } from '../lib/api';
 import { formatPrice } from '../lib/format';
-import { getProductImages } from '../lib/productImages';
+import { getProductImages, handleProductImageError } from '../lib/productImages';
 import { useCart } from '../context/CartContext';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 
@@ -90,7 +90,7 @@ export default function ProductDetailPage() {
       <section className="lg:hidden space-y-5">
         <div className="overflow-hidden rounded-[2rem] bg-white/82 shadow-[0_14px_36px_rgba(27,28,26,0.05)]">
           <div className="aspect-[4/5] bg-[var(--np-surface)]">
-            <img src={activeImage} alt={product.name} className="h-full w-full object-cover" />
+            <img src={activeImage} alt={product.name} onError={handleProductImageError} className="h-full w-full object-cover" />
           </div>
           {images.length > 1 ? (
             <div className="hide-scrollbar flex gap-3 overflow-x-auto p-4">
@@ -104,7 +104,7 @@ export default function ProductDetailPage() {
                     activeImage === image ? 'ring-2 ring-[var(--np-gold)]' : ''
                   ].join(' ')}
                 >
-                  <img src={image} alt={`${product.name} ${index + 1}`} className="h-full w-full object-cover" />
+                  <img src={image} alt={`${product.name} ${index + 1}`} onError={handleProductImageError} className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -170,7 +170,7 @@ export default function ProductDetailPage() {
       <section className="hidden lg:grid lg:grid-cols-[1fr_.92fr] lg:gap-10">
         <div className="overflow-hidden rounded-[2.3rem] bg-white/86 shadow-[0_20px_50px_rgba(27,28,26,0.05)]">
           <div className="aspect-square bg-[var(--np-surface)]">
-            <img src={activeImage} alt={product.name} className="h-full w-full object-cover" />
+            <img src={activeImage} alt={product.name} onError={handleProductImageError} className="h-full w-full object-cover" />
           </div>
           {images.length > 1 ? (
             <div className="grid grid-cols-4 gap-4 p-5">
@@ -184,7 +184,7 @@ export default function ProductDetailPage() {
                     activeImage === image ? 'ring-2 ring-[var(--np-gold)]' : ''
                   ].join(' ')}
                 >
-                  <img src={image} alt={`${product.name} ${index + 1}`} className="h-24 w-full object-cover" />
+                  <img src={image} alt={`${product.name} ${index + 1}`} onError={handleProductImageError} className="h-24 w-full object-cover" />
                 </button>
               ))}
             </div>
