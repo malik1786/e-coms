@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import SmartSearchBar from './SmartSearchBar';
 import { getProducts } from '../lib/api';
-import { useEffect, useState } from 'react';
 
 const brandName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 const storeLocation = 'Shop no. 1, Nirmal complex, Meeta nagar, Kondhwa, Pune - 411048';
@@ -47,69 +47,73 @@ export default function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6 lg:px-8">
-        <div className="glass-panel mx-auto hidden max-w-[1440px] items-center gap-6 rounded-[1.6rem] px-5 py-4 shadow-[0_10px_35px_rgba(27,28,26,0.05)] lg:flex sm:px-6">
-          <div className="w-[250px] min-w-0">
-            <Link to="/" className="min-w-0">
-              <span className="font-editorial block truncate text-lg font-semibold tracking-tight text-[var(--np-gold)] sm:text-2xl">
-                {brandName}
-              </span>
-              <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[var(--np-muted)] sm:block">
-                The Collection
-              </span>
-            </Link>
+        <div className="mx-auto hidden max-w-[1440px] space-y-3 lg:block">
+          <div className="glass-panel flex items-center gap-5 rounded-[1.35rem] px-5 py-3 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
+            <div className="w-[260px] min-w-0">
+              <Link to="/" className="min-w-0">
+                <span className="font-editorial block truncate text-lg font-semibold tracking-tight text-[var(--np-gold)] sm:text-2xl">
+                  {brandName}
+                </span>
+                <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[var(--np-muted)] sm:block">
+                  The Collection
+                </span>
+              </Link>
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <SmartSearchBar products={products} compact placeholder="Search fragrances, oud, musk..." />
+            </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <SmartSearchBar products={products} compact placeholder="Search fragrances, oud, musk..." />
-          </div>
-
-          <nav className="hidden items-center gap-6 xl:gap-7 lg:flex">
-            <NavLink to="/" className={desktopNavClass}>
-              Home
-            </NavLink>
-            <NavLink to="/products" className={desktopNavClass}>
-              The Collection
-            </NavLink>
-            <NavLink to="/products" className={desktopNavClass}>
-              Bespoke Scents
-            </NavLink>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
-              Our Story
-            </span>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
-              Journal
-            </span>
-            {isAuthenticated ? (
-              <NavLink to="/admin" className={desktopNavClass}>
-                Admin
-              </NavLink>
-            ) : null}
-          </nav>
-
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="max-w-[250px] rounded-[1.1rem] bg-[var(--np-surface)] px-4 py-3 text-right transition hover:bg-white"
-            aria-label="Open store location in Google Maps"
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
-              GPS Location
-            </p>
-            <p className="mt-1 truncate text-xs text-[var(--np-muted)]">
-              {storeLocation}
-            </p>
-          </a>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/cart"
-              className="inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--np-gold)] px-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]"
-              aria-label="Cart"
+          <div className="glass-panel flex items-center gap-6 rounded-[1.6rem] px-5 py-4 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="w-[260px] rounded-[1.1rem] bg-[var(--np-surface)] px-4 py-3 transition hover:bg-white"
+              aria-label="Open store location in Google Maps"
             >
-              <span>Cart</span>
-              <span className="ml-1 text-xs">{itemCount}</span>
-            </Link>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
+                GPS Location
+              </p>
+              <p className="mt-1 truncate text-xs text-[var(--np-muted)]">
+                {storeLocation}
+              </p>
+            </a>
+
+            <nav className="flex min-w-0 flex-1 items-center justify-center gap-6 xl:gap-7">
+              <NavLink to="/" className={desktopNavClass}>
+                Home
+              </NavLink>
+              <NavLink to="/products" className={desktopNavClass}>
+                The Collection
+              </NavLink>
+              <NavLink to="/products" className={desktopNavClass}>
+                Bespoke Scents
+              </NavLink>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
+                Our Story
+              </span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
+                Journal
+              </span>
+              {isAuthenticated ? (
+                <NavLink to="/admin" className={desktopNavClass}>
+                  Admin
+                </NavLink>
+              ) : null}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <Link
+                to="/cart"
+                className="inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--np-gold)] px-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]"
+                aria-label="Cart"
+              >
+                <span>Cart</span>
+                <span className="ml-1 text-xs">{itemCount}</span>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -131,19 +135,19 @@ export default function Navbar() {
             href={mapsUrl}
             target="_blank"
             rel="noreferrer"
-            className="mt-3 flex items-start justify-between rounded-[1rem] bg-[var(--np-surface)] px-4 py-3 transition hover:bg-white"
+            className="mt-3 flex items-center justify-between rounded-full bg-[var(--np-surface)] px-3 py-2 transition hover:bg-white"
             aria-label="Open store location in Google Maps"
           >
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
-                Visit Store
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--np-gold)]">
+                Store Location
               </p>
-              <p className="mt-1 text-xs leading-5 text-[var(--np-muted)]">
-                {storeLocation}
+              <p className="truncate text-[11px] text-[var(--np-muted)]">
+                Kondhwa, Pune 411048
               </p>
             </div>
-            <span className="ml-3 whitespace-nowrap text-xs font-semibold text-[var(--np-gold)]">
-              Open Maps
+            <span className="ml-3 whitespace-nowrap text-[11px] font-semibold text-[var(--np-gold)]">
+              Maps
             </span>
           </a>
         </div>
@@ -152,9 +156,7 @@ export default function Navbar() {
       <div className="fixed inset-x-0 bottom-0 z-50 px-3 pb-3 lg:hidden">
         <nav className="glass-panel mx-auto flex max-w-[560px] items-center justify-between rounded-[1.7rem] px-3 py-3 shadow-[0_18px_40px_rgba(27,28,26,0.12)]">
           {mobileItems.map((item) => {
-            const active = item.match
-              ? location.pathname === item.match
-              : location.pathname === item.to;
+            const active = item.match ? location.pathname === item.match : location.pathname === item.to;
 
             return (
               <Link
