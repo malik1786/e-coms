@@ -18,6 +18,9 @@ const desktopNavClass = ({ isActive }) =>
       : 'border-transparent text-[var(--np-muted)] hover:border-[rgba(121,89,0,0.25)] hover:text-[var(--np-gold)]'
   ].join(' ');
 
+const desktopLinkClass =
+  'border-b border-transparent pb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)] transition hover:border-[rgba(121,89,0,0.25)] hover:text-[var(--np-gold)]';
+
 const mobileItems = [
   { to: '/', label: 'Home', icon: 'H' },
   { to: '/products', label: 'Browse', icon: 'B' },
@@ -83,14 +86,16 @@ export default function Navbar() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
                 Journal
               </span>
-              {isAuthenticated ? (
-                <NavLink to="/admin" className={desktopNavClass}>
-                  Admin
-                </NavLink>
-              ) : null}
-            </nav>
-
-            <div className="flex items-center gap-2">
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className={desktopLinkClass}
+                aria-label="Open store location in Google Maps"
+                title={storeLocation}
+              >
+                Location
+              </a>
               <Link
                 to="/cart"
                 className="inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--np-gold)] px-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]"
@@ -99,22 +104,12 @@ export default function Navbar() {
                 <span>Cart</span>
                 <span className="ml-1 text-xs">{itemCount}</span>
               </Link>
-            </div>
-
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="w-[260px] rounded-[1.1rem] bg-[var(--np-surface)] px-4 py-3 transition hover:bg-white"
-              aria-label="Open store location in Google Maps"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--np-gold)]">
-                GPS Location
-              </p>
-              <p className="mt-1 truncate text-xs text-[var(--np-muted)]">
-                {storeLocation}
-              </p>
-            </a>
+              {isAuthenticated ? (
+                <NavLink to="/admin" className={desktopNavClass}>
+                  Admin
+                </NavLink>
+              ) : null}
+            </nav>
           </div>
         </div>
 
