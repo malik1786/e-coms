@@ -3,7 +3,6 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import SmartSearchBar from './SmartSearchBar';
-import { getProducts } from '../lib/api';
 
 const brandName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 const storeLocation = 'Shop no. 1, Nirmal complex, Meeta nagar, Kondhwa, Pune - 411048';
@@ -32,20 +31,6 @@ export default function Navbar() {
   const { itemCount } = useCart();
   const { isAuthenticated } = useAdminAuth();
   const location = useLocation();
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await getProducts();
-        setProducts(Array.isArray(data) ? data : []);
-      } catch {
-        setProducts([]);
-      }
-    };
-
-    loadProducts();
-  }, [location.pathname]);
 
   return (
     <>
@@ -107,7 +92,7 @@ export default function Navbar() {
           </div>
 
           <div className="mt-3">
-            <SmartSearchBar products={products} compact placeholder="Search fragrances, oud, musk..." />
+            <SmartSearchBar compact placeholder="Search fragrances, oud, musk..." />
           </div>
         </div>
       </header>

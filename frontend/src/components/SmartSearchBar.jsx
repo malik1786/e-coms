@@ -4,16 +4,28 @@ import { formatPrice } from '../lib/format';
 import { getSearchSuggestions } from '../lib/search';
 import { handleProductImageError } from '../lib/productImages';
 
+import { getProducts } from '../lib/api';
+
 export default function SmartSearchBar({
-  products,
   initialValue = '',
   placeholder = 'Search fragrances, oud, musk, featured...',
   compact = false,
   onQueryChange
 }) {
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
   const [query, setQuery] = useState(initialValue);
   const [focused, setFocused] = useState(false);
+
+  const handleFocus = async () => {
+    setFocused(true);
+    try {
+      const data = await getProducts();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch {
+      setProducts([]);
+    }
+  };
 
   useEffect(() => {
     setQuery(initialValue);
@@ -66,7 +78,7 @@ export default function SmartSearchBar({
           type="text"
           value={query}
           onChange={handleChange}
-          onFocus={() => setFocused(true)}
+          onFocus={handleFocus}
           onBlur={() => window.setTimeout(() => setFocused(false), 120)}
           placeholder={placeholder}
           className={[
