@@ -25,7 +25,7 @@ const mobileItems = [
   { to: '/', label: 'Home', icon: 'H' },
   { to: '/products', label: 'Browse', icon: 'B' },
   { to: '/cart', label: 'Cart', icon: 'C' },
-  { href: mapsUrl, label: 'Store', icon: 'L' }
+  { to: '/location', label: 'Store', icon: 'L' }
 ];
 
 export default function Navbar() {
@@ -79,22 +79,9 @@ export default function Navbar() {
               <NavLink to="/products" className={desktopNavClass}>
                 Bespoke Scents
               </NavLink>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
-                Our Story
-              </span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)]">
-                Journal
-              </span>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={desktopLinkClass}
-                aria-label="Open store location in Google Maps"
-                title={storeLocation}
-              >
+              <NavLink to="/location" className={desktopNavClass}>
                 Location
-              </a>
+              </NavLink>
               <Link
                 to="/cart"
                 className="inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--np-gold)] px-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]"
