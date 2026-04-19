@@ -92,7 +92,7 @@ async function request(path, options = {}) {
 ========================= */
 
 export const getProducts = () =>
-  request('/products', { auth: false });
+  request(`/products?_nocache=${Date.now()}`, { auth: false });
 
 export const getProduct = (id) =>
   request(`/products/${id}`, { auth: false });

@@ -16,16 +16,32 @@ export default function SmartSearchBar({
   const [products, setProducts] = useState([]);
   const [query, setQuery] = useState(initialValue);
   const [focused, setFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleFocus = async () => {
-    setFocused(true);
+  const loadLatestProducts = async () => {
     try {
+      setLoading(true);
       const data = await getProducts();
       setProducts(Array.isArray(data) ? data : []);
     } catch {
       setProducts([]);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleFocus = () => {
+    setFocused(true);
+    if (products.length === 0) {
+      loadLatestProducts();
+    }
+  };
+
+  useEffect(() => {
+    if (focused && products.length === 0) {
+      loadLatestProducts();
+    }
+  }, [focused, products.length]);
 
   useEffect(() => {
     setQuery(initialValue);

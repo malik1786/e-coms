@@ -78,6 +78,7 @@ export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState('All Fragrances');
   const [sortBy, setSortBy] = useState('Newest');
   const [activeIntensity, setActiveIntensity] = useState('');
+  const searchQuery = searchParams.get('q') || '';
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -97,9 +98,8 @@ export default function ProductsPage() {
     };
 
     loadProducts();
-  }, []);
+  }, [searchQuery]);
 
-  const searchQuery = searchParams.get('q') || '';
 
   const filteredProducts = useMemo(() => {
     const ranked = rankProducts(products, searchQuery);
