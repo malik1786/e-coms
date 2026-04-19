@@ -21,10 +21,44 @@ const desktopLinkClass =
   'border-b border-transparent pb-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--np-muted)] transition hover:border-[rgba(121,89,0,0.25)] hover:text-[var(--np-gold)]';
 
 const mobileItems = [
-  { to: '/', label: 'Home', icon: 'H' },
-  { to: '/products', label: 'Browse', icon: 'B' },
-  { to: '/cart', label: 'Cart', icon: 'C' },
-  { to: '/location', label: 'Store', icon: 'L' }
+  { 
+    to: '/', 
+    label: 'Home', 
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+    )
+  },
+  { 
+    to: '/products', 
+    label: 'Store', 
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    )
+  },
+  { 
+    to: '/cart', 
+    label: 'Cart', 
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+    badge: true
+  },
+  { 
+    to: '/location', 
+    label: 'Locate', 
+    icon: (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    )
+  }
 ];
 
 export default function Navbar() {
@@ -109,39 +143,29 @@ export default function Navbar() {
             const className = [
               'flex min-w-0 flex-1 flex-col items-center justify-center rounded-[0.95rem] px-1 py-1.5 text-[10px] font-medium transition',
               active
-                ? 'bg-[var(--np-gold)] text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]'
-                : 'text-[var(--np-muted)]'
+                ? 'bg-[rgba(121,89,0,0.08)] text-[var(--np-gold)] shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)]'
+                : 'text-[var(--np-muted)] hover:text-[var(--np-ink)]'
             ].join(' ');
 
             const content = (
-              <>
-                <span className="text-[12px] font-semibold">{item.icon}</span>
-                <span className="mt-1">{item.label}</span>
-              </>
+              <div className="relative flex flex-col items-center">
+                <div className={['transition-transform duration-300', active ? 'scale-110' : ''].join(' ')}>
+                  {item.icon}
+                </div>
+                <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.1em]">{item.label}</span>
+                {item.badge && itemCount > 0 && (
+                  <span className="absolute -right-3 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[10px] font-black text-white shadow-lg ring-2 ring-white">
+                    {itemCount}
+                  </span>
+                )}
+              </div>
             );
-
-            if (item.href) {
-              return (
-                <a
-                  key={`${item.label}-${item.href}`}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={className}
-                  aria-label="Open store location in Google Maps"
-                >
-                  {content}
-                </a>
-              );
-            }
 
             return (
               <Link
-                key={`${item.label}-${item.to}`}
+                key={item.label}
                 to={item.to}
-                className={[
-                  className
-                ].join(' ')}
+                className={className}
               >
                 {content}
               </Link>
