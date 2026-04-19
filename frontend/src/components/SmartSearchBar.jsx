@@ -83,13 +83,17 @@ export default function SmartSearchBar({
       </form>
 
       {showSuggestions ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_60px_rgba(15,23,42,0.2)] border border-[rgba(0,0,0,0.05)]">
+        <div 
+          className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_60px_rgba(15,23,42,0.2)] border border-[rgba(0,0,0,0.05)]"
+          onMouseDown={(e) => e.preventDefault()}
+        >
           {suggestions.length ? (
             <div className="divide-y divide-slate-100">
               {suggestions.map((product) => (
                 <Link
                   key={product._id}
                   to={`/products/${product._id}`}
+                  onClick={() => setFocused(false)}
                   className="flex items-center gap-4 px-4 py-3 transition hover:bg-amber-50/70"
                 >
                   <img
