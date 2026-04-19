@@ -76,9 +76,6 @@ export default function Navbar() {
               <NavLink to="/products" className={desktopNavClass}>
                 The Collection
               </NavLink>
-              <NavLink to="/products" className={desktopNavClass}>
-                Bespoke Scents
-              </NavLink>
               <NavLink to="/location" className={desktopNavClass}>
                 Location
               </NavLink>
