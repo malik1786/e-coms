@@ -49,7 +49,7 @@ export default function Navbar() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <SmartSearchBar products={products} compact placeholder="Search fragrances, oud, musk..." />
+              <SmartSearchBar compact placeholder="Search fragrances, oud, musk..." />
             </div>
           </div>
 
