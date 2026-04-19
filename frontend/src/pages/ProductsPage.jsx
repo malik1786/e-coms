@@ -76,7 +76,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeCategory, setActiveCategory] = useState('All Fragrances');
-  const [sortBy, setSortBy] = useState('Curated Selection');
+  const [sortBy, setSortBy] = useState('Newest');
   const [activeIntensity, setActiveIntensity] = useState('');
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function ProductsPage() {
   }, [activeCategory, products, searchQuery, sortBy]);
 
   const spotlightProducts = filteredProducts.slice(0, 3);
-  const collectionProducts = filteredProducts.slice(0, 6);
+  const collectionProducts = filteredProducts;
   const storeName = import.meta.env.VITE_STORE_NAME || 'Nafees Perfumes';
 
   const handleQueryChange = (nextValue) => {
@@ -374,16 +374,6 @@ export default function ProductsPage() {
           ) : filteredProducts.length ? (
             <>
               {renderProductGrid(collectionProducts)}
-
-              <div className="mt-16 flex items-center justify-center gap-4">
-                <button type="button" className="ghost-stroke flex h-10 w-10 items-center justify-center rounded-full text-[var(--np-muted)]">
-                  ‹
-                </button>
-                <span className="text-sm text-[var(--np-muted)]">Page 1 of 4</span>
-                <button type="button" className="ghost-stroke flex h-10 w-10 items-center justify-center rounded-full text-[var(--np-muted)]">
-                  ›
-                </button>
-              </div>
             </>
           ) : (
             <div className="rounded-[1.8rem] bg-white/80 p-10 text-center text-[var(--np-muted)]">
