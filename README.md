@@ -119,3 +119,4 @@ Or double-click `run_project.bat` from the root folder.
 - The project now uses a single root `.env` file for both backend and frontend settings.
 "# -e--com" 
 "# -e--com" 
+"# e-com" 
