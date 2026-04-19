@@ -68,54 +68,63 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="relative z-40 px-3 pt-3 sm:px-6 lg:px-8">
-        <div className="mx-auto hidden max-w-[1440px] space-y-3 lg:block">
-          <div className="glass-panel flex items-center gap-5 rounded-[1.35rem] px-5 py-3 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
-            <div className="w-[260px] min-w-0">
-              <Link to="/" className="min-w-0">
-                <span className="font-editorial block truncate text-lg font-semibold tracking-tight text-[var(--np-gold)] sm:text-2xl">
-                  {brandName}
-                </span>
-                <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[var(--np-muted)] sm:block">
-                  The Collection
-                </span>
-              </Link>
+      <header className="relative z-50 px-3 pt-3 sm:px-6 lg:px-8">
+        {/* Desktop Single Row Navbar */}
+        <div className="mx-auto hidden max-w-[1440px] lg:block">
+          <div className="glass-panel flex items-center justify-between gap-8 rounded-[1.8rem] px-8 py-4 shadow-[0_12px_40px_rgba(27,28,26,0.06)] border border-[rgba(121,89,0,0.08)]">
+            {/* Logo */}
+            <Link to="/" className="flex flex-col items-start min-w-fit">
+              <span className="font-editorial text-2xl font-bold tracking-tight text-[var(--np-gold)]">
+                {brandName}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--np-muted)]">
+                The Collection
+              </span>
+            </Link>
+
+            {/* Search - Center focused */}
+            <div className="max-w-xl flex-1">
+              <SmartSearchBar compact placeholder="Discover perfumes, oud, musk..." />
             </div>
 
-            <div className="min-w-0 flex-1">
-              <SmartSearchBar compact placeholder="Search fragrances, oud, musk..." />
-            </div>
-          </div>
-
-          <div className="glass-panel flex items-center gap-6 rounded-[1.6rem] px-5 py-4 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
-            <nav className="flex min-w-0 flex-1 items-center justify-center gap-6 xl:gap-7">
+            {/* Links - Right aligned */}
+            <nav className="flex items-center gap-6 xl:gap-8">
               <NavLink to="/" className={desktopNavClass}>
                 Home
               </NavLink>
               <NavLink to="/products" className={desktopNavClass}>
-                The Collection
+                Collection
               </NavLink>
               <NavLink to="/location" className={desktopNavClass}>
                 Location
               </NavLink>
+              
               <Link
                 to="/cart"
-                className="inline-flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--np-gold)] px-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(121,89,0,0.22)]"
+                className="group relative flex h-11 w-11 items-center justify-center rounded-full bg-[rgba(121,89,0,0.06)] transition-all hover:bg-[var(--np-gold)]"
                 aria-label="Cart"
               >
-                <span>Cart</span>
-                <span className="ml-1 text-xs">{itemCount}</span>
+                <svg className="h-5 w-5 text-[var(--np-gold)] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {itemCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-rose-600 text-[10px] font-black text-white shadow-lg ring-2 ring-white">
+                    {itemCount}
+                  </span>
+                )}
               </Link>
-              {isAuthenticated ? (
+
+              {isAuthenticated && (
                 <NavLink to="/admin" className={desktopNavClass}>
                   Admin
                 </NavLink>
-              ) : null}
+              )}
             </nav>
           </div>
         </div>
 
-        <div className="glass-panel mx-auto rounded-[1.35rem] px-4 py-3 shadow-[0_10px_35px_rgba(27,28,26,0.05)] lg:hidden">
+        {/* Mobile Header (Search focused) */}
+        <div className="glass-panel mx-auto rounded-[1.6rem] border border-[rgba(121,89,0,0.08)] px-4 py-3 shadow-[0_10px_35px_rgba(27,28,26,0.05)] lg:hidden">
           <div className="min-w-0">
             <p className="truncate font-editorial text-lg font-semibold text-[var(--np-gold)]">
               {brandName}
