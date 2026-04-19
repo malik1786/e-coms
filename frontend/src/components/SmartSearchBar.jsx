@@ -83,7 +83,7 @@ export default function SmartSearchBar({
       </form>
 
       {showSuggestions ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] bg-white/98 shadow-[0_25px_60px_rgba(15,23,42,0.14)] backdrop-blur">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_60px_rgba(15,23,42,0.2)] border border-[rgba(0,0,0,0.05)]">
           {suggestions.length ? (
             <div className="divide-y divide-slate-100">
               {suggestions.map((product) => (
