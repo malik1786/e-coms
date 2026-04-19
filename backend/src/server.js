@@ -65,11 +65,13 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // ======================
-// ROOT
+// SERVE FRONTEND (Production)
 // ======================
-app.get('/', (req, res) => {
-  res.json({ message: 'API Running' });
-});
+const FRONTEND_DIST = path.resolve(__dirname, '../../frontend/dist');
+const fs = require('fs');
+if (fs.existsSync(FRONTEND_DIST)) {
+  app.use(express.static(FRONTEND_DIST));
+}
 
 app.get(['/health', '/api/health'], (req, res) => {
   res.json({
@@ -90,10 +92,15 @@ app.use(['/api/products', '/products'], productRoutes);
 app.use(['/api/auth', '/auth'], authRoutes);
 
 // ======================
-// 404
+// CATCH-ALL: Serve React frontend for non-API routes
 // ======================
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+app.get('*', (req, res) => {
+  const indexFile = path.join(FRONTEND_DIST, 'index.html');
+  if (fs.existsSync(indexFile)) {
+    res.sendFile(indexFile);
+  } else {
+    res.status(404).json({ message: 'Route not found' });
+  }
 });
 
 // ======================
