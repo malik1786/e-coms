@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6 lg:px-8">
+      <header className="relative z-40 px-3 pt-3 sm:px-6 lg:px-8">
         <div className="mx-auto hidden max-w-[1440px] space-y-3 lg:block">
           <div className="glass-panel flex items-center gap-5 rounded-[1.35rem] px-5 py-3 shadow-[0_10px_35px_rgba(27,28,26,0.05)]">
             <div className="w-[260px] min-w-0">

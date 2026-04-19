@@ -14,7 +14,6 @@ export default function Layout() {
         <div className="mx-auto max-w-[1440px] px-4 py-16 text-center sm:px-6 lg:px-8">
           <p className="font-editorial mx-auto max-w-2xl text-2xl italic leading-relaxed text-[var(--np-ink)]">
             "A perfume is an intimate object, it is the reflector of the heart." 
-            <span className="mt-4 block pl-4 text-sm not-italic tracking-[0.2em] text-[var(--np-gold)] uppercase">— Emanuel Ungaro</span>
           </p>
         </div>
       </footer>
