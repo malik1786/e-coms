@@ -21,7 +21,7 @@ const CLIENT_URLS = (process.env.CLIENT_URL || '')
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 const getAllowedOrigins = () => {
   const origins = new Set([
@@ -114,10 +114,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`API listening on port ${PORT}`);
-  });
-}
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API listening on port ${PORT}`);
+});
 
 module.exports = app;
