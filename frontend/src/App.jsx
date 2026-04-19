@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import SearchPage from './pages/SearchPage';
 import CartPage from './pages/CartPage';
 import LocationPage from './pages/LocationPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/location" element={<LocationPage />} />
         <Route path="/admin_login" element={<AdminLoginPage />} />

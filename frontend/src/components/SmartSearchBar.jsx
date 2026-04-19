@@ -60,12 +60,12 @@ export default function SmartSearchBar({
 
     if (!trimmed) {
       onQueryChange?.('');
-      navigate('/products');
+      navigate('/search');
       return;
     }
 
     onQueryChange?.(trimmed);
-    navigate(`/products?q=${encodeURIComponent(trimmed)}`);
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
   const handleChange = (event) => {
