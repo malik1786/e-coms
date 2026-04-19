@@ -87,10 +87,9 @@ app.get(['/health', '/api/health'], (req, res) => {
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 
-// Support both "/api/*" and bare routes. This makes local dev and Vercel
-// (when using routePrefix="/api") work without double-prefix issues.
-app.use(['/api/products', '/products'], productRoutes);
-app.use(['/api/auth', '/auth'], authRoutes);
+// Ensure API routes strictly use /api prefix to avoid colliding with React frontend routes
+app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // ======================
 // CATCH-ALL: Serve React frontend for non-API routes
