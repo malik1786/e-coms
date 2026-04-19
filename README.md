@@ -118,3 +118,4 @@ Or double-click `run_project.bat` from the root folder.
 - The admin panel is website-only now. There is no mobile app or APK in this repo.
 - The project now uses a single root `.env` file for both backend and frontend settings.
 "# -e--com" 
+"# -e--com" 
