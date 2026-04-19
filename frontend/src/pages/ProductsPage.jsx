@@ -170,25 +170,7 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            <div className="mt-8 lg:mt-0 lg:justify-self-end">
-              <div className="surface-panel max-w-md rounded-[1.8rem] p-5 text-[var(--np-ink)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--np-gold)]">
-                  Curated Search
-                </p>
-                <h2 className="font-editorial mt-3 text-3xl leading-tight">The Collection</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--np-muted)]">
-                  Browse refined expressions and filter the catalog without losing the premium editorial feel.
-                </p>
-                <div className="mt-5">
-                  <SmartSearchBar
-                    products={products}
-                    initialValue={searchQuery}
-                    onQueryChange={handleQueryChange}
-                    placeholder="Search oud, amber, rose, musk..."
-                  />
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>
@@ -411,24 +393,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      <section className="rounded-[2rem] bg-[var(--np-surface)] px-5 py-14 text-center sm:px-8 lg:px-12 lg:py-24">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="font-editorial text-4xl italic text-[var(--np-ink)] lg:text-5xl">Join the Inner Circle</h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[var(--np-muted)] lg:text-base">
-            Receive exclusive invitations to private launches and the stories behind our newest extractions.
-          </p>
-          <div className="mx-auto mt-8 flex max-w-md items-center gap-3 border-b border-[rgba(121,89,0,0.16)] pb-3">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="w-full bg-transparent text-sm text-[var(--np-ink)] outline-none placeholder:text-[var(--np-muted)]"
-            />
-            <button type="button" className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--np-gold)]">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

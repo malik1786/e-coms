@@ -24,7 +24,6 @@ const desktopLinkClass =
 const mobileItems = [
   { to: '/', label: 'Home', icon: 'H' },
   { to: '/products', label: 'Browse', icon: 'B' },
-  { to: '/products?q=oud', label: 'Search', icon: 'S', match: '/products' },
   { to: '/cart', label: 'Cart', icon: 'C' },
   { href: mapsUrl, label: 'Store', icon: 'L' }
 ];

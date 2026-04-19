@@ -62,14 +62,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="rounded-[1.8rem] bg-[var(--np-surface)] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--np-gold)]">Quick search</p>
-          <h2 className="font-editorial mt-2 text-3xl text-[var(--np-ink)]">Find your note</h2>
-          <div className="mt-4">
-            <SmartSearchBar products={products} placeholder="Search oud, musk, amber, rose..." />
-          </div>
-        </div>
-
         <div className="grid grid-cols-2 gap-3">
           {['Long-lasting blends', 'Gift-worthy bottles', 'WhatsApp ordering', 'Curated signatures'].map((item) => (
             <div key={item} className="rounded-[1.4rem] bg-white/80 p-4 text-sm font-medium text-[var(--np-ink)] shadow-[0_10px_24px_rgba(27,28,26,0.04)]">
