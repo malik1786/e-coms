@@ -45,7 +45,7 @@ export default function Navbar() {
     };
 
     loadProducts();
-  }, []);
+  }, [location.pathname]);
 
   return (
     <>
