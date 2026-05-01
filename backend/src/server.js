@@ -42,17 +42,7 @@ const getAllowedOrigins = () => {
 // CORS (FIXED + SAFE)
 // ======================
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = getAllowedOrigins();
-    const allowAnyOrigin = allowedOrigins.length === 2; // localhost only fallback
-
-    // allow requests with no origin (like mobile apps or curl)
-    if (!origin || allowAnyOrigin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins for Vercel, or rely on Vercel's built-in CORS
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -114,8 +104,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`API listening on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`API listening on port ${PORT}`);
+  });
+}
 
 module.exports = app;
