@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
     try {
       setLoading(true);
       const data = await getProducts();
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,14 +55,15 @@ export default function AdminDashboardPage() {
     loadProducts();
   }, []);
 
+  const safeProducts = Array.isArray(products) ? products : [];
   const stats = useMemo(
     () => [
-      { label: 'Total products', value: products.length },
-      { label: 'In stock', value: products.filter((product) => product.stock > 0).length },
-      { label: 'Featured', value: products.filter((product) => product.featured).length },
-      { label: 'Trending', value: products.filter((product) => product.trending).length }
+      { label: 'Total products', value: safeProducts.length },
+      { label: 'In stock', value: safeProducts.filter((product) => product.stock > 0).length },
+      { label: 'Featured', value: safeProducts.filter((product) => product.featured).length },
+      { label: 'Trending', value: safeProducts.filter((product) => product.trending).length }
     ],
-    [products]
+    [safeProducts]
   );
 
   const handleChange = (event) => {
